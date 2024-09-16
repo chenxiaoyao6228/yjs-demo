@@ -14,21 +14,21 @@ interface TodoItemProps {
 
 const TodoItem: React.FC<TodoItemProps> = ({ id, text, completed, onToggle, onDelete }) => {
   return (
-    <div className="flex items-center space-x-2 p-2 rounded-md bg-white shadow-sm">
+    <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-800 shadow-sm">
       <Checkbox
         id={`todo-${id}`}
         checked={completed}
         onCheckedChange={() => onToggle(id)}
         className={cn(
-          "border-2",
-          completed ? "border-green-500 bg-green-500" : "border-gray-300"
+          "w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
+          completed ? "bg-primary border-primary" : ""
         )}
       />
       <label
         htmlFor={`todo-${id}`}
         className={cn(
           "flex-grow cursor-pointer",
-          completed ? "line-through text-gray-500" : "text-gray-700"
+          completed ? "line-through text-gray-500" : "text-gray-300"
         )}
       >
         {text}
