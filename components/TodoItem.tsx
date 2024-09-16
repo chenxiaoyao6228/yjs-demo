@@ -2,6 +2,7 @@ import React from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TodoItemProps {
   id: string;
@@ -13,15 +14,22 @@ interface TodoItemProps {
 
 const TodoItem: React.FC<TodoItemProps> = ({ id, text, completed, onToggle, onDelete }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 p-2 rounded-md bg-white shadow-sm">
       <Checkbox
         id={`todo-${id}`}
         checked={completed}
         onCheckedChange={() => onToggle(id)}
+        className={cn(
+          "border-2",
+          completed ? "border-green-500 bg-green-500" : "border-gray-300"
+        )}
       />
       <label
         htmlFor={`todo-${id}`}
-        className={`flex-grow ${completed ? 'line-through text-gray-500' : ''}`}
+        className={cn(
+          "flex-grow cursor-pointer",
+          completed ? "line-through text-gray-500" : "text-gray-700"
+        )}
       >
         {text}
       </label>

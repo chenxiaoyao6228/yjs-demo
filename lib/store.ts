@@ -35,10 +35,15 @@ const useStore = create<TodoStore>((set, get) => {
             yarray.push([newTodo]);
         },
         toggleTodo: (id) => {
-            const index = yarray.toArray().findIndex((todo) => todo.id === id);
-            if (index !== -1) {
-                yarray.get(index).completed = !yarray.get(index).completed;
-            }
+            ydoc.transact(() => {
+                const index = yarray.toArray().findIndex((todo) => todo.id === id);
+                if (index !== -1) {
+                    const todo = yarray.get(index);
+                    todo.completed = !todo.completed;
+                    yarray.delete(index, 1);
+                    yarray.insert(index, [todo]);
+                }
+            });
         },
         deleteTodo: (id) => {
             const index = yarray.toArray().findIndex((todo) => todo.id === id);
