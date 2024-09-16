@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "collab-server": "npx y-websocket --port 1234",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

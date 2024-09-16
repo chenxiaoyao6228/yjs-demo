@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import TodoItem from '@/components/TodoItem';
@@ -9,6 +9,10 @@ import useStore from '@/lib/store';
 export default function Home() {
   const [newTodo, setNewTodo] = useState('');
   const { todos, addTodo, toggleTodo, deleteTodo } = useStore();
+
+  useEffect(() => {
+    console.log('Todos updated:', todos);
+  }, [todos]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import * as Y from 'yjs';
-import { WebrtcProvider } from 'y-webrtc';
+import { WebsocketProvider } from 'y-websocket';
 
 interface Todo {
     id: string;
@@ -11,44 +11,56 @@ interface Todo {
 interface TodoStore {
     todos: Todo[];
     ydoc: Y.Doc;
-    provider: WebrtcProvider;
+    provider: WebsocketProvider;
     addTodo: (text: string) => void;
     toggleTodo: (id: string) => void;
     deleteTodo: (id: string) => void;
 }
 
-const useStore = create<TodoStore>((set, get) => {
-    const ydoc = new Y.Doc();
-    const provider = new WebrtcProvider('todo-list', ydoc);
-    const yarray = ydoc.getArray<Todo>('todos');
+// Create these outside the store to ensure they're only created once
+const ydoc = new Y.Doc();
+const provider = new WebsocketProvider('ws://localhost:1234', 'todo-list', ydoc);
+const yArray = ydoc.getArray<Todo>('todos');
 
-    yarray.observe(() => {
-        set({ todos: yarray.toArray() });
+// Add these log statements
+provider.on('synced', () => {
+    console.log('Initial sync completed');
+});
+
+provider.awareness.on('change', () => {
+    console.log('Awareness update');
+});
+
+const useStore = create<TodoStore>((set, get) => {
+
+    yArray.observe(() => {
+        console.log('yArray updated:', yArray.toArray());
+        set({ todos: yArray.toArray() });
     });
 
     return {
-        todos: [],
+        todos: yArray.toArray(),
         ydoc,
         provider,
         addTodo: (text) => {
             const newTodo = { id: Date.now().toString(), text, completed: false };
-            yarray.push([newTodo]);
+            yArray.push([newTodo]);
         },
         toggleTodo: (id) => {
             ydoc.transact(() => {
-                const index = yarray.toArray().findIndex((todo) => todo.id === id);
+                const index = yArray.toArray().findIndex((todo) => todo.id === id);
                 if (index !== -1) {
-                    const todo = yarray.get(index);
+                    const todo = yArray.get(index);
                     todo.completed = !todo.completed;
-                    yarray.delete(index, 1);
-                    yarray.insert(index, [todo]);
+                    yArray.delete(index, 1);
+                    yArray.insert(index, [todo]);
                 }
             });
         },
         deleteTodo: (id) => {
-            const index = yarray.toArray().findIndex((todo) => todo.id === id);
+            const index = yArray.toArray().findIndex((todo) => todo.id === id);
             if (index !== -1) {
-                yarray.delete(index, 1);
+                yArray.delete(index, 1);
             }
         },
     };
