@@ -1,11 +1,19 @@
 import { create } from 'zustand';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
+import { nanoid } from 'nanoid';
 
 interface Todo {
     id: string;
     text: string;
     completed: boolean;
+}
+
+export interface UserAwareness {
+    clientId: string;
+    name: string;
+    color: string;
+    cursor: { x: number; y: number } | null;
 }
 
 interface TodoStore {
@@ -15,6 +23,10 @@ interface TodoStore {
     addTodo: (text: string) => void;
     toggleTodo: (id: string) => void;
     deleteTodo: (id: string) => void;
+    setAwareness: (awareness: Partial<UserAwareness>) => void;
+    getAwareness: () => Map<number, UserAwareness>;
+    clientId: string;
+    cursors: UserAwareness[];
 }
 
 // Create these outside the store to ensure they're only created once
@@ -31,11 +43,59 @@ provider.awareness.on('change', () => {
     console.log('Awareness update');
 });
 
+const randomColors = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FF8A65', '#7986CB',
+    '#9575CD', '#4DB6AC', '#81C784', '#64B5F6', '#BA68C8',
+    '#4DD0E1', '#FFB74D', '#E57373', '#9CCC65', '#4FC3F7',
+];
+
+const randomNames = [
+    'Alice', 'Bob', 'Charlie', 'David', 'Emma',
+    'Frank', 'Grace', 'Henry', 'Ivy', 'Jack',
+    'Kate', 'Liam', 'Mia', 'Noah', 'Olivia',
+    'Paul', 'Quinn', 'Rachel', 'Sam', 'Tara'
+];
+
+const getRandomElement = <T>(array: T[]): T => array[Math.floor(Math.random() * array.length)];
+
+// 修改clientId的生成逻辑
+const getClientId = () => {
+    const storedClientId = localStorage.getItem('clientId');
+    if (storedClientId) {
+        return storedClientId;
+    }
+    const newClientId = nanoid();
+    localStorage.setItem('clientId', newClientId);
+    return newClientId;
+};
+
+
 const useStore = create<TodoStore>((set, get) => {
 
     yArray.observe(() => {
         console.log('yArray updated:', yArray.toArray());
         set({ todos: yArray.toArray() });
+    });
+
+    // Initialize local user awareness
+    const localUserAwareness: UserAwareness = {
+        clientId: getClientId(),
+        name: getRandomElement(randomNames),
+        color: getRandomElement(randomColors),
+        cursor: null,
+    };
+    provider.awareness.setLocalStateField('user', localUserAwareness);
+
+    // Set up awareness event listener
+    provider.awareness.on('change', () => {
+        const awarenessStates = Array.from(provider.awareness.getStates().entries());
+        set((state) => ({
+            ...state,
+            cursors: awarenessStates.map(([clientId, userState]) => ({
+                clientId,
+                ...userState.user,
+            })).filter(cursor => cursor.clientId !== get().clientId),
+        }));
     });
 
     return {
@@ -63,6 +123,21 @@ const useStore = create<TodoStore>((set, get) => {
                 yArray.delete(index, 1);
             }
         },
+        setAwareness: (awareness: Partial<UserAwareness>) => {
+            const currentAwareness = provider.awareness.getLocalState()?.user || {};
+            const mergedAwareness = {
+                ...currentAwareness,
+                ...awareness,
+                clientId: getClientId(),
+                cursor: {
+                    ...currentAwareness.cursor,
+                    ...awareness.cursor
+                }
+            };
+            provider.awareness.setLocalStateField('user', mergedAwareness);
+        },
+        clientId: getClientId(),
+        cursors: [],
     };
 });
 
