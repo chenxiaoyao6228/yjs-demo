@@ -8,14 +8,14 @@ export default function Home() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4 text-blue-600">Todo List</h2>
           <p className="mb-4 text-gray-700">A collaborative todo list app where you can manage tasks in real-time with your team.</p>
-          <Link href="/todo" className="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
+          <Link href="/apps/todo" className="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">
             Go to Todo List
           </Link>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4 text-green-600">Fabric Canvas</h2>
           <p className="mb-4 text-gray-700">A shared canvas where you can collaboratively create and edit designs in real-time.</p>
-          <Link href="/fabric" className="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300">
+          <Link href="/apps/fabric" className="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300">
             Go to Fabric Canvas
           </Link>
         </div>
