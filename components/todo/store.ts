@@ -1,3 +1,5 @@
+'use client'
+
 import { create } from 'zustand';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
@@ -20,12 +22,11 @@ interface TodoStore {
     todos: Todo[];
     ydoc: Y.Doc;
     provider: WebsocketProvider;
+    clientId: string;
     addTodo: (text: string) => void;
     toggleTodo: (id: string) => void;
     deleteTodo: (id: string) => void;
     setAwareness: (awareness: Partial<UserAwareness>) => void;
-    getAwareness: () => Map<number, UserAwareness>;
-    clientId: string;
     cursors: UserAwareness[];
 }
 
@@ -60,6 +61,10 @@ const getRandomElement = <T>(array: T[]): T => array[Math.floor(Math.random() * 
 
 // 修改clientId的生成逻辑
 const getClientId = () => {
+    if (typeof window === 'undefined') {
+        return nanoid(); // Generate a new ID for SSR
+    }
+
     const storedClientId = localStorage.getItem('clientId');
     if (storedClientId) {
         return storedClientId;
@@ -102,6 +107,8 @@ const useStore = create<TodoStore>((set, get) => {
         todos: yArray.toArray(),
         ydoc,
         provider,
+        clientId: getClientId(),
+        cursors: [],
         addTodo: (text) => {
             const newTodo = { id: Date.now().toString(), text, completed: false };
             yArray.push([newTodo]);
@@ -136,8 +143,6 @@ const useStore = create<TodoStore>((set, get) => {
             };
             provider.awareness.setLocalStateField('user', mergedAwareness);
         },
-        clientId: getClientId(),
-        cursors: [],
     };
 });
 

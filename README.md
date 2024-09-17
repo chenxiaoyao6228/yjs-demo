@@ -2,6 +2,12 @@
 
 A simple Todo application built with Next.js, React, TypeScript, and Zustand.
 
+## Demo
+
+![Todo App](./yjs-todo.gif)
+
+👉 You can also try it out [here](https://yjs-demo-pi.vercel.app/)
+
 ## Prerequisites
 
 - Node.js (v14 or later)
