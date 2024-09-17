@@ -1,5 +1,3 @@
-'use client'
-
 import { create } from 'zustand';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
@@ -61,9 +59,6 @@ const getRandomElement = <T>(array: T[]): T => array[Math.floor(Math.random() * 
 
 // 修改clientId的生成逻辑
 const getClientId = () => {
-    if (typeof window === 'undefined') {
-        return nanoid(); // Generate a new ID for SSR
-    }
 
     const storedClientId = localStorage.getItem('clientId');
     if (storedClientId) {
@@ -75,6 +70,16 @@ const getClientId = () => {
 };
 
 
+// Initialize local user awareness
+const localUserAwareness: UserAwareness = {
+    clientId: getClientId(),
+    name: getRandomElement(randomNames),
+    color: getRandomElement(randomColors),
+    cursor: null,
+};
+
+
+
 const useStore = create<TodoStore>((set, get) => {
 
     yArray.observe(() => {
@@ -82,13 +87,7 @@ const useStore = create<TodoStore>((set, get) => {
         set({ todos: yArray.toArray() });
     });
 
-    // Initialize local user awareness
-    const localUserAwareness: UserAwareness = {
-        clientId: getClientId(),
-        name: getRandomElement(randomNames),
-        color: getRandomElement(randomColors),
-        cursor: null,
-    };
+
     provider.awareness.setLocalStateField('user', localUserAwareness);
 
     // Set up awareness event listener

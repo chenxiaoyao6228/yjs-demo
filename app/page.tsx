@@ -1,6 +1,9 @@
-'use client'
+import dynamic from 'next/dynamic'
 
-import Todo from '../components/todo';
+const Todo = dynamic(() => import('../components/todo'), {
+  ssr: false,
+})
+
 
 export default function Home() {
   return (
