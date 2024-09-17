@@ -38,8 +38,8 @@ const Todo: React.FC = () => {
     }
   };
 
-  return (<main ref={containerRef} className="container mx-auto mt-10 max-w-md p-4 relative">
-  <h1 className="text-2xl font-bold mb-4">Collaborative Todo List</h1>
+  return (
+    <div ref={containerRef} className="relative">
       <form onSubmit={handleSubmit} className="flex space-x-2 mb-4">
         <Input
           type="text"
@@ -60,8 +60,9 @@ const Todo: React.FC = () => {
           />
         ))}
       </div>
-      <Cursors cursors={cursors} /> 
-  </main>)
+      <Cursors cursors={cursors} />
+    </div>
+  );
 };
 
 export default Todo;
