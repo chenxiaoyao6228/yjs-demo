@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UserAwareness } from './store';
+import { UserAwareness } from '../../app/apps/todo/store';
 
 interface CursorsProps {
   cursors: UserAwareness[];

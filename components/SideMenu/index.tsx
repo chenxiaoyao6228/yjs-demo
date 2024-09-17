@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Home, ListTodo, PenTool } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 interface MenuItem {
   href: string;
@@ -18,7 +19,9 @@ const menuItems: MenuItem[] = [
   { href: '/apps/fabric', icon: <PenTool size={24} />, label: 'Fabric' },
 ];
 
+
 const SideMenu: React.FC<SideMenuProps> = ({ onActiveChange }) => {
+  const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sideMenuCollapsed');
@@ -27,7 +30,10 @@ const SideMenu: React.FC<SideMenuProps> = ({ onActiveChange }) => {
     return false;
   });
 
-  const [activeItem, setActiveItem] = useState('/');
+  const [activeItem, setActiveItem] = useState(() => {
+    console.log("Current pathname:", pathname);
+    return pathname;
+  });
 
   useEffect(() => {
     localStorage.setItem('sideMenuCollapsed', JSON.stringify(isCollapsed));
@@ -36,6 +42,10 @@ const SideMenu: React.FC<SideMenuProps> = ({ onActiveChange }) => {
   useEffect(() => {
     onActiveChange(activeItem);
   }, [activeItem, onActiveChange]);
+
+  useEffect(() => {
+    setActiveItem(pathname);
+  }, [pathname]);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
