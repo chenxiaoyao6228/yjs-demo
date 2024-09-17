@@ -39,3 +39,8 @@ pnpm run dev
 ```
 
 Open your browser and navigate to `http://localhost:3000` to access the Todo application.
+
+
+## About
+
+This project is generated with cursor AI

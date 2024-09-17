@@ -1,5 +1,6 @@
-import { UserAwareness } from '@/lib/store';
+
 import React from 'react';
+import { UserAwareness } from './store';
 
 interface CursorsProps {
   cursors: UserAwareness[];
