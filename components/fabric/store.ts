@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
-import { fabric } from 'fabric';
+import { nanoid } from 'nanoid';
 
 interface Shape {
     id: string;
@@ -18,16 +18,16 @@ interface FabricStore {
     setAwareness: (data: { cursor: { x: number; y: number } }) => void;
 }
 
-const ydoc = new Y.Doc();
-const provider = new WebsocketProvider('ws://localhost:1234', 'fabric-room', ydoc);
-const yShapes = ydoc.getArray<Shape>('shapes');
+const yDoc = new Y.Doc();
+const provider = new WebsocketProvider('ws://localhost:1234', 'fabric-room', yDoc);
+const yShapes = yDoc.getArray<Shape>('shapes');
 const awareness = provider.awareness;
 
 const useStore = create<FabricStore>((set) => ({
     shapes: [],
     cursors: {},
     addShape: (shape) => {
-        const newShape = { ...shape, id: Y.generateUuid() };
+        const newShape = { ...shape, id: nanoid() } as Shape;
         yShapes.push([newShape]);
     },
     removeShape: (id) => {

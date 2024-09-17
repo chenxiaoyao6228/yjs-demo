@@ -56,7 +56,12 @@ const FabricCanvas: React.FC = () => {
     }
   }, [shapes, updateAttr, removeShape]);
 
-  return <canvas ref={canvasRef} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="border-2 border-gray-300 rounded-lg shadow-md bg-white"
+    />
+  );
 };
 
 export default FabricCanvas;
