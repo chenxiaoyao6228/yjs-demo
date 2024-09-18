@@ -1,6 +1,6 @@
 
+import { UserAwareness } from '@/lib/type';
 import React from 'react';
-import { UserAwareness } from '../../app/apps/todo/store';
 
 interface CursorsProps {
   cursors: UserAwareness[];
@@ -18,6 +18,7 @@ const Cursors: React.FC<CursorsProps> = ({ cursors }) => {
             top: cursor.cursor?.y,
             pointerEvents: 'none',
             zIndex: 1000,
+            transform: 'translate(-6px, -6px)' 
           }}
         >
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

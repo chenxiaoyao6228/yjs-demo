@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Home, ListTodo, PenTool } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, ListTodo, Square } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 interface MenuItem {
@@ -16,9 +16,8 @@ interface SideMenuProps {
 const menuItems: MenuItem[] = [
   { href: '/', icon: <Home size={24} />, label: 'Home' },
   { href: '/apps/todo', icon: <ListTodo size={24} />, label: 'Todo' },
-  { href: '/apps/fabric', icon: <PenTool size={24} />, label: 'Fabric' },
+  { href: '/apps/konva', icon: <Square size={24} />, label: 'Konva' },
 ];
-
 
 const SideMenu: React.FC<SideMenuProps> = ({ onActiveChange }) => {
   const pathname = usePathname();

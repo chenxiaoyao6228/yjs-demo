@@ -1,6 +1,6 @@
-# Todo App
+# Todo Demos
 
-A simple Todo application built with Next.js, React, TypeScript, and Zustand.
+Yjs demo collections, including todo app, whiteboard, text editor and more
 
 ## Demo
 
@@ -17,8 +17,8 @@ A simple Todo application built with Next.js, React, TypeScript, and Zustand.
 
  Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/todo-app.git
-   cd todo-app
+   git clone git@github.com:chenxiaoyao6228/yjs-demo.git
+   cd yjs-demo
    ```
 
 Install dependencies:

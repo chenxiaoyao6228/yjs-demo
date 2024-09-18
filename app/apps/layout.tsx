@@ -18,20 +18,20 @@ export default function AppsLayout({
       case '/apps/todo':
         setActiveTitle('Todo');
         break;
-      case '/apps/fabric':
-        setActiveTitle('Fabric');
+      case '/apps/konva':
+        setActiveTitle('Konva');
         break;
       default:
-        setActiveTitle('Home');
+        setActiveTitle('Todo');
     }
   };
 
   return (
     <div className="flex h-screen">
       <SideMenu onActiveChange={handleActiveChange} />
-      <div className="flex-1 flex justify-center mt-10">
+      <div className="h-full flex-1 flex justify-center mt-20">
         <main className="w-1/2 p-4">
-          <h1 className="text-3xl font-bold mb-8">{activeTitle}</h1>
+          <h1 className="font-bold mb-8 text-3xl">{activeTitle}</h1>
           {children}
         </main>
       </div>
