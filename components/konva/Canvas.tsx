@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Stage, Layer, Circle, Rect, Text, Line, Transformer } from 'react-konva';
 import useStore from './store';
 import { KonvaShape } from './YjsKonvasBinding';
@@ -72,14 +72,30 @@ export default function Canvas() {
   const updateShape = useStore((state) => state.updateShape);
   const { setAwareness } = useAwareness(provider);
   const stageRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
+
+  const updateSize = useCallback(() => {
+    if (containerRef.current) {
+      setStageSize({
+        width: containerRef.current.offsetWidth,
+        height: containerRef.current.offsetHeight,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateSize(); // Initial size calculation
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, [updateSize]);
 
   useEffect(() => {
     const handlePointerMove = (e: any) => {
       if (stageRef.current) {
         const stage = stageRef.current;
         const pos = stage.getPointerPosition();
-        console.log(pos);
         if (pos) {
           // setAwareness({ cursor: { x: pos.x, y: pos.y } }); // TODO: fix this
           setAwareness({ cursor: { x: e.clientX, y: e.clientY } });
@@ -87,8 +103,15 @@ export default function Canvas() {
       }
     };
 
-    stageRef.current.addEventListener('pointermove', handlePointerMove);
-    return () => stageRef.current.removeEventListener('pointermove', handlePointerMove);
+    const stage = stageRef.current;
+    if (stage) {
+      stage.on('pointermove', handlePointerMove);
+    }
+    return () => {
+      if (stage) {
+        stage.off('pointermove', handlePointerMove);
+      }
+    };
   }, [setAwareness]);
 
   const handleSelect = (id: string) => {
@@ -102,19 +125,21 @@ export default function Canvas() {
   };
 
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      ref={stageRef}
-      onClick={handleStageClick}
-      onMouseDown={handleStageClick}
-      className="w-full border border-gray-300"
-    >
-      <Layer>
-        {shapes.map((shape) => (
-          <ShapeComponent key={shape.id} shape={shape} isSelected={shape.id === selectedId} onSelect={() => handleSelect(shape.id)} />
-        ))}
-      </Layer>
-    </Stage>
+    <div ref={containerRef} className="w-full h-full">
+      <Stage
+        width={stageSize.width}
+        height={stageSize.height}
+        ref={stageRef}
+        onClick={handleStageClick}
+        onMouseDown={handleStageClick}
+        className=" border border-gray-300"
+      >
+        <Layer>
+          {shapes.map((shape) => (
+            <ShapeComponent key={shape.id} shape={shape} isSelected={shape.id === selectedId} onSelect={() => handleSelect(shape.id)} />
+          ))}
+        </Layer>
+      </Stage>
+    </div>
   );
 }

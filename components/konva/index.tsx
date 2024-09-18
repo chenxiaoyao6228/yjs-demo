@@ -13,7 +13,7 @@ export default function KonvaComp() {
   const { shapes, provider, addShape, updateShape, deleteShape, setAwareness } = useStore();
   const { cursors } = useAwareness(provider);
   return (
-    <div className="h-[800px] w-[800px]">
+    <div>
       <div className="flex bg-gray-100 p-2 mb-2">
         <Toolbar />
         <PropertyPanel />

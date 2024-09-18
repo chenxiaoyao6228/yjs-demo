@@ -25,7 +25,7 @@ export default function AppsLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex h-screen">
       <SideMenu onActiveChange={handleActiveChange} />
-      <div className="h-full flex-1 flex justify-center mt-20">
+      <div className="h-full flex-1 flex justify-center ">
         <main className="w-1/2 p-4">
           <h1 className="font-bold mb-8 text-3xl">{activeTitle}</h1>
           {children}
