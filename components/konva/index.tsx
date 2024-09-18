@@ -10,7 +10,7 @@ import useStore from './store';
 import { useAwareness } from '@/lib/hooks/useAwareness';
 
 export default function KonvaComp() {
-  const { shapes,  provider, addShape, updateShape, deleteShape, setAwareness } = useStore();
+  const { shapes, provider, addShape, updateShape, deleteShape, setAwareness } = useStore();
   const { cursors } = useAwareness(provider);
   return (
     <div className="h-[800px] w-[800px]">
@@ -21,7 +21,7 @@ export default function KonvaComp() {
       <div className="flex-1 relative w-full">
         <Canvas />
       </div>
-        <Cursor cursors={cursors}/>
+      <Cursor cursors={cursors} />
     </div>
   );
 }

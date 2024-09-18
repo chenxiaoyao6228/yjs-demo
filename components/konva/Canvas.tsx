@@ -4,8 +4,8 @@ import useStore from './store';
 import { KonvaShape } from './YjsKonvasBinding';
 import { useAwareness } from '@/lib/hooks/useAwareness';
 
-const ShapeComponent: React.FC<{ 
-  shape: KonvaShape; 
+const ShapeComponent: React.FC<{
+  shape: KonvaShape;
   isSelected: boolean;
   onSelect: () => void;
 }> = ({ shape, isSelected, onSelect }) => {
@@ -41,16 +41,7 @@ const ShapeComponent: React.FC<{
       case 'text':
         return <Text {...shape} {...commonProps} />;
       case 'triangle':
-        return (
-          <Line
-            {...shape}
-            {...commonProps}
-            points={[0, 0, 50, 50, -50, 50]}
-            closed
-            fill={shape.fill}
-            stroke={shape.stroke}
-          />
-        );
+        return <Line {...shape} {...commonProps} points={[0, 0, 50, 50, -50, 50]} closed fill={shape.fill} stroke={shape.stroke} />;
       default:
         return null;
     }
@@ -79,7 +70,7 @@ export default function Canvas() {
   const shapes = useStore((state) => state.shapes);
   const provider = useStore((state) => state.provider);
   const updateShape = useStore((state) => state.updateShape);
-  const {setAwareness} = useAwareness(provider);
+  const { setAwareness } = useAwareness(provider);
   const stageRef = useRef<any>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -89,7 +80,7 @@ export default function Canvas() {
         const stage = stageRef.current;
         const pos = stage.getPointerPosition();
         console.log(pos);
-        if(pos) {
+        if (pos) {
           // setAwareness({ cursor: { x: pos.x, y: pos.y } }); // TODO: fix this
           setAwareness({ cursor: { x: e.clientX, y: e.clientY } });
         }
@@ -111,22 +102,17 @@ export default function Canvas() {
   };
 
   return (
-    <Stage 
-      width={window.innerWidth} 
-      height={window.innerHeight} 
-      ref={stageRef} 
+    <Stage
+      width={window.innerWidth}
+      height={window.innerHeight}
+      ref={stageRef}
       onClick={handleStageClick}
       onMouseDown={handleStageClick}
       className="w-full border border-gray-300"
     >
       <Layer>
         {shapes.map((shape) => (
-          <ShapeComponent 
-            key={shape.id} 
-            shape={shape} 
-            isSelected={shape.id === selectedId}
-            onSelect={() => handleSelect(shape.id)}
-          />
+          <ShapeComponent key={shape.id} shape={shape} isSelected={shape.id === selectedId} onSelect={() => handleSelect(shape.id)} />
         ))}
       </Layer>
     </Stage>

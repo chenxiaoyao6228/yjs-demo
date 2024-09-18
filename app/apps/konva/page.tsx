@@ -1,7 +1,7 @@
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 // https://github.com/konvajs/react-konva/issues/588
-const Konva = dynamic(() => import("../../../components/konva"), {
+const Konva = dynamic(() => import('../../../components/konva'), {
   ssr: false,
 });
 

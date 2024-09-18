@@ -1,13 +1,9 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import SideMenu from '@/components/sideMenu';
 
-export default function AppsLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AppsLayout({ children }: { children: React.ReactNode }) {
   const [activeTitle, setActiveTitle] = useState('Home');
 
   const handleActiveChange = (active: string) => {

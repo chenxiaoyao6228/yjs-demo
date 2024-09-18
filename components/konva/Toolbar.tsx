@@ -12,7 +12,7 @@ const shapes = [
 export default function Toolbar() {
   const addShape = useStore((state) => state.addShape);
 
-  const handleAddShape = (type: typeof shapes[number]['type']) => {
+  const handleAddShape = (type: (typeof shapes)[number]['type']) => {
     addShape({
       type,
       x: 100,
@@ -26,11 +26,7 @@ export default function Toolbar() {
   return (
     <div className="flex justify-center items-center">
       {shapes.map(({ type, label }) => (
-        <Button
-          key={type}
-          onClick={() => handleAddShape(type)}
-          className="py-2 px-4 mr-2"
-        >
+        <Button key={type} onClick={() => handleAddShape(type)} className="py-2 px-4 mr-2">
           Add {label}
         </Button>
       ))}

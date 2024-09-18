@@ -1,4 +1,3 @@
-
 import { UserAwareness } from '@/lib/type';
 import React from 'react';
 
@@ -18,7 +17,7 @@ const Cursors: React.FC<CursorsProps> = ({ cursors }) => {
             top: cursor.cursor?.y,
             pointerEvents: 'none',
             zIndex: 1000,
-            transform: 'translate(-6px, -6px)' 
+            transform: 'translate(-6px, -6px)',
           }}
         >
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +26,15 @@ const Cursors: React.FC<CursorsProps> = ({ cursors }) => {
             <rect x="12.5" y="13.6" transform="matrix(0.9221 -0.3871 0.3871 0.9221 -5.7605 6.5909)" width="2" height="8" fill={cursor.color} />
             <polygon fill={cursor.color} points="9.2,7.3 9.2,18.5 12.2,15.6 12.6,15.5 17.4,15.5" />
           </svg>
-          <span style={{ backgroundColor: cursor.color, color: 'white', padding: '2px 4px', borderRadius: '2px', marginLeft: '4px' }}>
+          <span
+            style={{
+              backgroundColor: cursor.color,
+              color: 'white',
+              padding: '2px 4px',
+              borderRadius: '2px',
+              marginLeft: '4px',
+            }}
+          >
             {cursor.name}
           </span>
         </div>

@@ -30,7 +30,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ onActiveChange }) => {
   });
 
   const [activeItem, setActiveItem] = useState(() => {
-    console.log("Current pathname:", pathname);
+    console.log('Current pathname:', pathname);
     return pathname;
   });
 

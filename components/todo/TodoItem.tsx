@@ -20,17 +20,11 @@ const TodoItem: React.FC<TodoItemProps> = ({ id, text, completed, onToggle, onDe
         checked={completed}
         onCheckedChange={() => onToggle(id)}
         className={cn(
-          "w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
-          completed ? "bg-primary border-primary" : ""
+          'w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600',
+          completed ? 'bg-primary border-primary' : ''
         )}
       />
-      <label
-        htmlFor={`todo-${id}`}
-        className={cn(
-          "flex-grow cursor-pointer",
-          completed ? "line-through text-gray-500" : "text-gray-300"
-        )}
-      >
+      <label htmlFor={`todo-${id}`} className={cn('flex-grow cursor-pointer', completed ? 'line-through text-gray-500' : 'text-gray-300')}>
         {text}
       </label>
       <Button variant="ghost" size="sm" onClick={() => onDelete(id)}>

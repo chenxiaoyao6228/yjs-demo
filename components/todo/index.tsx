@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -23,7 +23,7 @@ const Todo: React.FC = () => {
           cursor: {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
-          },    
+          },
         });
       }
     };
@@ -43,23 +43,12 @@ const Todo: React.FC = () => {
   return (
     <div ref={containerRef} className="relative">
       <form onSubmit={handleSubmit} className="flex space-x-2 mb-4">
-        <Input
-          type="text"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="Add a new todo"
-          className="flex-grow"
-        />
+        <Input type="text" value={newTodo} onChange={(e) => setNewTodo(e.target.value)} placeholder="Add a new todo" className="flex-grow" />
         <Button type="submit">Add</Button>
       </form>
       <div className="space-y-2">
         {todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            {...todo}
-            onToggle={toggleTodo}
-            onDelete={deleteTodo}
-          />
+          <TodoItem key={todo.id} {...todo} onToggle={toggleTodo} onDelete={deleteTodo} />
         ))}
       </div>
       <Cursors cursors={cursors} />
