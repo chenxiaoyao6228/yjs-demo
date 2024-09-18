@@ -16,10 +16,10 @@ export default function KonvaComp() {
     <div>
       <div className="flex mb-2">
         <Toolbar />
-        <PropertyPanel />
       </div>
-      <div className="flex-1 relative w-full">
+      <div className="flex-1 relative w-full flex">
         <Canvas />
+        <PropertyPanel />
       </div>
       <Cursor cursors={cursors} />
     </div>

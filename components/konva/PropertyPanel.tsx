@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import useStore from './store';
 
 export default function PropertyPanel() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedId = useStore((state) => state.selectedId);
   const shapes = useStore((state) => state.shapes);
   const updateShape = useStore((state) => state.updateShape);
 
@@ -19,7 +19,7 @@ export default function PropertyPanel() {
   if (!selectedShape) return null;
 
   return (
-    <div className="mt-4 space-y-4">
+    <div className="ml-4 space-y-4">
       <h2 className="text-lg font-semibold">Properties</h2>
       <div className="space-y-2">
         <Label htmlFor="x">X</Label>
@@ -31,11 +31,7 @@ export default function PropertyPanel() {
       </div>
       <div className="space-y-2">
         <Label htmlFor="fill">Fill Color</Label>
-        <Input id="fill" type="color" value={selectedShape.fill} onChange={(e) => handleChange('fill', e.target.value)} />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="stroke">Border Color</Label>
-        <Input id="stroke" type="color" value={selectedShape.stroke} onChange={(e) => handleChange('stroke', e.target.value)} />
+        <Input id="fill" type="color" value={selectedShape.fill || '#000000'} onChange={(e) => handleChange('fill', e.target.value)} />
       </div>
     </div>
   );

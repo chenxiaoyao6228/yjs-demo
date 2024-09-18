@@ -19,10 +19,15 @@ export default function Toolbar() {
       type,
       x: 100,
       y: 100,
-      fill: 'lightblue',
-      stroke: 'black',
+      fill: type === 'text' ? 'rgb(255, 255, 255)' : 'rgb(173, 216, 230)',
       ...(type === 'circle' || type === 'rect' ? { width: 100, height: 100 } : {}),
-      ...(type === 'text' ? { text: 'New Text' } : {}),
+      ...(type === 'text'
+        ? {
+            text: 'New Text',
+            fontSize: 20,
+            fontStyle: 'bold',
+          }
+        : {}),
     });
   };
 

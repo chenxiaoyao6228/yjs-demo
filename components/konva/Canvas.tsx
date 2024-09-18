@@ -1,16 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Stage, Layer, Circle, Rect, Text, Line, Transformer } from 'react-konva';
 import useStore from './store';
 import { KonvaShape } from './YjsKonvasBinding';
 import { useAwareness } from '@/lib/hooks/useAwareness';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { debounce } from '@/lib/utils';
+import debounce from 'lodash.debounce';
 
-const ShapeComponent: React.FC<{
+interface ShapeComponentProps {
   shape: KonvaShape;
   isSelected: boolean;
   onSelect: () => void;
-}> = ({ shape, isSelected, onSelect }) => {
+  updateShape: (id: string, attrs: Partial<KonvaShape>) => void;
+}
+
+const ShapeComponent: React.FC<ShapeComponentProps> = ({ shape, isSelected, onSelect, updateShape }) => {
   const shapeRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
@@ -25,11 +28,25 @@ const ShapeComponent: React.FC<{
     onClick: onSelect,
     ref: shapeRef,
     draggable: true,
-    onDragEnd: (e: any) => {
-      // Update shape position in store
-      useStore.getState().updateShape(shape.id, {
+    onDragEnd: (e: KonvaEventObject<DragEvent>) => {
+      updateShape(shape.id, {
         x: e.target.x(),
         y: e.target.y(),
+      });
+    },
+    onTransformEnd: (e: KonvaEventObject<Event>) => {
+      const node = shapeRef.current;
+      const scaleX = node.scaleX();
+      const scaleY = node.scaleY();
+
+      node.scaleX(1);
+      node.scaleY(1);
+
+      updateShape(shape.id, {
+        x: node.x(),
+        y: node.y(),
+        width: node.width() * scaleX,
+        height: node.height() * scaleY,
       });
     },
   };
@@ -73,48 +90,51 @@ export default function Canvas() {
   const provider = useStore((state) => state.provider);
   const binding = useStore((state) => state.binding);
   const updateShape = useStore((state) => state.updateShape);
+  const deleteShape = useStore((state) => state.deleteShape);
   const { setAwareness } = useAwareness(provider);
   const stageRef = useRef<any>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedId = useStore((state) => state.selectedId);
+  const setSelectedId = useStore((state) => state.setSelectedId);
 
   useEffect(() => {
-    const handlePointerMove = (e: any) => {
-      if (stageRef.current) {
-        const stage = stageRef.current;
-        const pos = stage.getPointerPosition();
-        if (pos) {
-          setAwareness({
-            cursor: {
-              x: pos.x,
-              y: pos.y,
-            },
-          });
-        }
+    const handlePointerMove = debounce((e: PointerEvent) => {
+      setAwareness({
+        cursor: {
+          x: e.clientX,
+          y: e.clientY,
+        },
+      });
+    }, 16);
+
+    window.addEventListener('pointermove', handlePointerMove);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId) {
+        deleteShape(selectedId);
+        setSelectedId(null);
       }
     };
 
-    const stage = stageRef.current;
-    if (stage) {
-      stage.on('pointermove', handlePointerMove);
-    }
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
-      if (stage) {
-        stage.off('pointermove', handlePointerMove);
-      }
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('keydown', handleKeyDown);
+      handlePointerMove.cancel(); // Cancel any pending debounced calls on cleanup
     };
-  }, [setAwareness]);
+  }, [setAwareness, deleteShape, selectedId, setSelectedId]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
   };
 
-  const handleStageClick = (e: any) => {
+  const handleStageClick = (e: KonvaEventObject<MouseEvent>) => {
     if (e.target === e.target.getStage()) {
       setSelectedId(null);
     }
   };
 
-  const handleDragMove = debounce((evt: KonvaEventObject<DragEvent>): void => {
+  const handleDragMove = (evt: KonvaEventObject<DragEvent>): void => {
     const shape = evt.target;
     if (shape && shape.id) {
       updateShape(shape.id(), {
@@ -122,7 +142,7 @@ export default function Canvas() {
         y: shape.y(),
       });
     }
-  }, 30);
+  };
 
   return (
     <div className="inset-0 overflow-hidden">
@@ -137,7 +157,13 @@ export default function Canvas() {
       >
         <Layer>
           {shapes.map((shape) => (
-            <ShapeComponent key={shape.id} shape={shape} isSelected={shape.id === selectedId} onSelect={() => handleSelect(shape.id)} />
+            <ShapeComponent
+              key={shape.id}
+              shape={shape}
+              isSelected={shape.id === selectedId}
+              onSelect={() => handleSelect(shape.id)}
+              updateShape={updateShape}
+            />
           ))}
         </Layer>
       </Stage>
