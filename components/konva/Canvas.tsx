@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Circle, Rect, Text, Line, Transformer } from 'react-konva';
 import useStore from './store';
 import { KonvaShape } from './YjsKonvasBinding';
 import { useAwareness } from '@/lib/hooks/useAwareness';
+import { KonvaEventObject } from 'konva/lib/Node';
+import { debounce } from '@/lib/utils';
 
 const ShapeComponent: React.FC<{
   shape: KonvaShape;
@@ -69,27 +71,11 @@ const ShapeComponent: React.FC<{
 export default function Canvas() {
   const shapes = useStore((state) => state.shapes);
   const provider = useStore((state) => state.provider);
+  const binding = useStore((state) => state.binding);
   const updateShape = useStore((state) => state.updateShape);
   const { setAwareness } = useAwareness(provider);
   const stageRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
-
-  const updateSize = useCallback(() => {
-    if (containerRef.current) {
-      setStageSize({
-        width: containerRef.current.offsetWidth,
-        height: containerRef.current.offsetHeight,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    updateSize(); // Initial size calculation
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, [updateSize]);
 
   useEffect(() => {
     const handlePointerMove = (e: any) => {
@@ -97,8 +83,12 @@ export default function Canvas() {
         const stage = stageRef.current;
         const pos = stage.getPointerPosition();
         if (pos) {
-          // setAwareness({ cursor: { x: pos.x, y: pos.y } }); // TODO: fix this
-          setAwareness({ cursor: { x: e.clientX, y: e.clientY } });
+          setAwareness({
+            cursor: {
+              x: pos.x,
+              y: pos.y,
+            },
+          });
         }
       }
     };
@@ -124,15 +114,26 @@ export default function Canvas() {
     }
   };
 
+  const handleDragMove = debounce((evt: KonvaEventObject<DragEvent>): void => {
+    const shape = evt.target;
+    if (shape && shape.id) {
+      updateShape(shape.id(), {
+        x: shape.x(),
+        y: shape.y(),
+      });
+    }
+  }, 30);
+
   return (
-    <div ref={containerRef} className="w-full h-full">
+    <div className="inset-0 overflow-hidden">
       <Stage
-        width={stageSize.width}
-        height={stageSize.height}
+        width={600}
+        height={400}
         ref={stageRef}
         onClick={handleStageClick}
         onMouseDown={handleStageClick}
-        className=" border border-gray-300"
+        onDragMove={handleDragMove}
+        className="border border-gray-300 bg-gray"
       >
         <Layer>
           {shapes.map((shape) => (

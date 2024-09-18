@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { nanoid } from 'nanoid';
+import Konva from 'konva';
 
 export interface KonvaShape {
   id: string;
@@ -51,6 +52,10 @@ export class YjsKonvasBinding extends EventEmitter {
     if (index !== -1) {
       this.yShapes.delete(index, 1);
     }
+  }
+
+  clearShapes() {
+    this.yShapes.delete(0, this.yShapes.length);
   }
 
   getShapes(): KonvaShape[] {

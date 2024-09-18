@@ -11,6 +11,7 @@ interface StoreState {
   addShape: (shape: Omit<KonvaShape, 'id'>) => void;
   updateShape: (id: string, updates: Partial<KonvaShape>) => void;
   deleteShape: (id: string) => void;
+  clearShapes: () => void;
 }
 
 const yDoc = new Y.Doc();
@@ -23,11 +24,9 @@ const useStore = create<StoreState>((set) => ({
   yDoc,
   provider,
   addShape: (shape) => binding.addShape(shape),
-  updateShape: (id, updates) =>
-    set((state) => ({
-      shapes: state.shapes.map((shape) => (shape.id === id ? { ...shape, ...updates } : shape)),
-    })),
+  updateShape: (id, updates) => binding.updateShape(id, updates),
   deleteShape: (id) => binding.deleteShape(id),
+  clearShapes: () => binding.clearShapes(),
 }));
 
 binding.on('shapesChanged', (shapes) => {

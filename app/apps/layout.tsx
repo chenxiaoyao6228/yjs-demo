@@ -27,7 +27,7 @@ export default function AppsLayout({ children }: { children: React.ReactNode }) 
       <SideMenu onActiveChange={handleActiveChange} />
       <div className="h-full flex-1 flex justify-center ">
         <main className="w-1/2 p-4">
-          <h1 className="font-bold mb-8 text-3xl">{activeTitle}</h1>
+          <h1 className="font-bold mb-4 text-3xl">{activeTitle}</h1>
           {children}
         </main>
       </div>

@@ -1,16 +1,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import useStore from './store';
+import { Circle, Square, Trash2, Triangle, Type } from 'lucide-react';
 
 const shapes = [
-  { type: 'circle', label: 'Circle' },
-  { type: 'rect', label: 'Rectangle' },
-  { type: 'text', label: 'Text' },
-  { type: 'triangle', label: 'Triangle' },
+  { type: 'circle', label: 'Circle', icon: Circle },
+  { type: 'rect', label: 'Rectangle', icon: Square },
+  { type: 'text', label: 'Text', icon: Type },
+  { type: 'triangle', label: 'Triangle', icon: Triangle },
 ] as const;
 
 export default function Toolbar() {
   const addShape = useStore((state) => state.addShape);
+  const clearShapes = useStore((state) => state.clearShapes);
 
   const handleAddShape = (type: (typeof shapes)[number]['type']) => {
     addShape({
@@ -19,6 +21,7 @@ export default function Toolbar() {
       y: 100,
       fill: 'lightblue',
       stroke: 'black',
+      ...(type === 'circle' || type === 'rect' ? { width: 100, height: 100 } : {}),
       ...(type === 'text' ? { text: 'New Text' } : {}),
     });
   };
@@ -26,10 +29,14 @@ export default function Toolbar() {
   return (
     <div className="flex justify-center items-center">
       {shapes.map(({ type, label }) => (
-        <Button key={type} onClick={() => handleAddShape(type)} className="py-2 px-4 mr-2">
-          Add {label}
+        <Button key={type} onClick={() => handleAddShape(type)} className="p-2 mr-2" variant="outline" size="icon" title={`Add ${label}`}>
+          {shapes.find((shape) => shape.type === type)?.icon &&
+            React.createElement(shapes.find((shape) => shape.type === type)!.icon, { className: 'h-4 w-4' })}
         </Button>
       ))}
+      <Button onClick={clearShapes} className="ml-2" variant="outline" size="icon" title="Clear All">
+        <Trash2 className="h-4 w-4 hover:text-red-500 transition-colors" />
+      </Button>
     </div>
   );
 }

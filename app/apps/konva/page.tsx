@@ -1,10 +1,15 @@
 import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 
-// https://github.com/konvajs/react-konva/issues/588
-const Konva = dynamic(() => import('../../../components/konva'), {
+const DynamicCanvas = dynamic(() => import('@/components/konva'), {
   ssr: false,
 });
 
+// https://github.com/konvajs/react-konva/issues/588
 export default function KonvaPage() {
-  return <Konva />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DynamicCanvas />
+    </Suspense>
+  );
 }

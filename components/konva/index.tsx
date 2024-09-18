@@ -10,11 +10,11 @@ import useStore from './store';
 import { useAwareness } from '@/lib/hooks/useAwareness';
 
 export default function KonvaComp() {
-  const { shapes, provider, addShape, updateShape, deleteShape, setAwareness } = useStore();
+  const { provider } = useStore();
   const { cursors } = useAwareness(provider);
   return (
     <div>
-      <div className="flex bg-gray-100 p-2 mb-2">
+      <div className="flex mb-2">
         <Toolbar />
         <PropertyPanel />
       </div>
